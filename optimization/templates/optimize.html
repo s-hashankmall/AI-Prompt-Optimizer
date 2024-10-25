@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="optimized-prompts-container">
+    <div class="original-prompt">
+        <h4>Original Prompt:</h4>
+        <div class="chatbox user p-3">
+            <p>{{ original_prompt }}</p>
+        </div>
+    </div>
+
+    <h2 class="text-center">Optimized Prompts</h2>
+
+    <h4 class="mt-4">Select an Optimized Prompt:</h4>
+    <form method="POST" action="{% url 'get_answer' %}" id="optimizedPromptForm">
+        {% csrf_token %}
+        <div class="form-group">
+            {% for prompt in optimized_prompts %}
+                <div class="form-check">
+                    <input class="form-check-input" type="radio" id="prompt_{{ forloop.counter }}" name="optimized_prompt" value="{{ prompt }}" required>
+                    <label class="form-check-label" for="prompt_{{ forloop.counter }}">{{ prompt }}</label>
+                </div>
+            {% endfor %}
+        </div>
+        <input type="hidden" name="original_prompt" value="{{ original_prompt }}">
+        <button type="submit" class="btn btn-primary mt-3" id="getAnswersButton" disabled>Get Answers</button>
+    </form>
+</div>
+
+<style>
+    .optimized-prompts-container {
+        max-width: 800px;
+        margin: 0 auto; 
+        padding: 20px;
+        background-color: #ffffff; 
+        border-radius: 10px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); 
+        color: #000000; 
+    }
+
+    .original-prompt {
+        margin-bottom: 40px; 
+    }
+
+    .chatbox.user {
+        background-color: #303030; 
+        border-radius: 5px; 
+        color: #ffffff; 
+    }
+
+    .chatbox.user p {
+        color: #ffffff; 
+    }
+
+    h2, h4 {
+        color: #000000; 
+    }
+
+    p {
+        color: #000000; 
+        line-height: 1.6; 
+    }
+
+    .form-check {
+        margin-bottom: 10px;
+    }
+
+    button {
+        margin-top: 20px; 
+        padding: 10px 20px; 
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const radioButtons = document.querySelectorAll('input[name="optimized_prompt"]');
+        const getAnswersButton = document.getElementById('getAnswersButton');
+
+        radioButtons.forEach((radio) => {
+            radio.addEventListener('change', function() {
+                getAnswersButton.disabled = !Array.from(radioButtons).some(radio => radio.checked);
+            });
+        });
+    });
+</script>
+{% endblock %}

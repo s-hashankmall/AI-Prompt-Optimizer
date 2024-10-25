@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results & Ratings</title>
+    <style>
+       
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%; 
+            width: 100%;
+            overflow-y: auto; 
+        }
+
+        
+        .results-container {
+            width: 100%; 
+            min-height: 100vh; 
+            background-color: #ffffff; 
+            color: #000000; 
+            display: flex;
+            flex-direction: column;
+            box-sizing: border-box; 
+            padding: 20px; 
+        }
+
+        .content-wrapper {
+            flex-grow: 1;
+            margin: 0; 
+            padding: 20px; 
+            box-sizing: border-box;
+        }
+
+        .flex-container {
+            display: flex;
+            flex-wrap: wrap; 
+            justify-content: space-between; 
+        }
+
+        .chatbox-wrapper {
+            flex: 1 1 45%; 
+            margin: 10px;
+            box-sizing: border-box; 
+        }
+
+        .chatbox {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); 
+            color: #000000;
+        }
+
+        .chatbox.user {
+            background-color: #303030; 
+            color: #ffffff;
+        }
+
+        
+        .prompt-text h3, .prompt-text p {
+            color: #ffffff; 
+        }
+
+        .answer-text h3, .answer-text p {
+            color: #000000; 
+        }
+
+        .chatbox h3 {
+            margin-top: 0;
+        }
+
+        .rating-container {
+            margin-top: 20px;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            color: #333333;
+            text-align: center;
+        }
+
+        p {
+            line-height: 1.6; 
+            color: #000000; 
+        }
+
+        label {
+            color: #000000; 
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            width: 100%;
+            margin-top: 10px;
+            box-sizing: border-box; 
+        }
+
+        button {
+            margin: 20px auto; 
+            padding: 10px 20px;
+            width: 80%;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+       
+        button:disabled {
+            background-color: #cccccc; 
+            cursor: not-allowed; 
+        }
+    </style>
+    <script>
+        
+        function toggleSubmitButton() {
+            const ratingOriginal = document.getElementById('rating_original').value;
+            const ratingNew = document.getElementById('rating_new').value;
+            const submitButton = document.getElementById('submit_button');
+            submitButton.disabled = !(ratingOriginal && ratingNew); 
+        }
+    </script>
+</head>
+<body>
+    <div class="results-container">
+        <h1 class="text-center">Results & Ratings</h1>
+        <form method="POST" action="{% url 'save_ratings' %}">
+            {% csrf_token %}
+            <div class="content-wrapper">
+                <div class="flex-container">
+                    <div class="chatbox-wrapper">
+                        <div class="chatbox user">
+                            <div class="prompt-text">
+                                <h3>Original Prompt</h3>
+                                <p>{{ original_prompt }}</p>
+                            </div>
+                        </div>
+
+                        <div class="chatbox ai">
+                            <div class="answer-text">
+                                <h3>Original Answer</h3>
+                                <p>{{ original_answer }}</p>
+                            </div>
+                        </div>
+
+                        <div class="rating-container">
+                            <label for="rating_original">Rate the original answer:</label>
+                            <input type="number" id="rating_original" name="rating_original" min="1" max="5" required oninput="toggleSubmitButton()">
+                        </div>
+                    </div>
+
+                    <div class="chatbox-wrapper">
+                        <div class="chatbox user">
+                            <div class="prompt-text">
+                                <h3>New Prompt</h3>
+                                <p>{{ new_prompt }}</p>
+                            </div>
+                        </div>
+
+                        <div class="chatbox ai">
+                            <div class="answer-text">
+                                <h3>New Answer</h3>
+                                <p>{{ new_answer }}</p>
+                            </div>
+                        </div>
+
+                        <div class="rating-container">
+                            <label for="rating_new">Rate the new answer:</label>
+                            <input type="number" id="rating_new" name="rating_new" min="1" max="5" required oninput="toggleSubmitButton()">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <input type="hidden" name="original_prompt" value="{{ original_prompt }}">
+            <input type="hidden" name="new_prompt" value="{{ new_prompt }}">
+
+            <button type="submit" id="submit_button" class="btn btn-primary mt-4" disabled>Submit Ratings</button>
+        </form>
+    </div>
+</body>
+</html>
