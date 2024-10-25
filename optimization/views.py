@@ -4,7 +4,7 @@ from .models import PromptRating
 import re
 
 
-cohere_client = cohere.Client('5JfXeGsuJXntnjlQjbKA2wN5v4T3px5ruXm2Vusk')
+cohere_client = cohere.Client('your_COHERE_API_KEY')
 
 
 def home(request):
